@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String registerUser(UserBean user) {
-		// THis comment is added to check if model identifies it as trivial or not...
 		String status = "User Registration Failed!";
 
 		boolean isRegtd = isRegistered(user.getEmail());
@@ -41,27 +40,20 @@ public class UserServiceImpl implements UserService {
 			System.out.println("Connected Successfully!");
 		}
 
-		try {
+		ps = conn.prepareStatement("insert into " + IUserConstants.TABLE_USER + " values(?,?,?,?,?,?)");
 
-			ps = conn.prepareStatement("insert into " + IUserConstants.TABLE_USER + " values(?,?,?,?,?,?)");
+		ps.setString(1, user.getEmail());
+		ps.setString(2, user.getName());
+		ps.setLong(3, user.getMobile());
+		ps.setString(4, user.getAddress());
+		ps.setInt(5, user.getPinCode());
+		ps.setString(6, user.getPassword());
 
-			ps.setString(1, user.getEmail());
-			ps.setString(2, user.getName());
-			ps.setLong(3, user.getMobile());
-			ps.setString(4, user.getAddress());
-			ps.setInt(5, user.getPinCode());
-			ps.setString(6, user.getPassword());
+		int k = ps.executeUpdate();
 
-			int k = ps.executeUpdate();
-
-			if (k > 0) {
-				status = "User Registered Successfully!";
-				MailMessage.registrationSuccess(user.getEmail(), user.getName().split(" ")[0]);
-			}
-
-		} catch (SQLException e) {
-			status = "Error: " + e.getMessage();
-			e.printStackTrace();
+		if (k > 0) {
+			status = "User Registered Successfully!";
+			MailMessage.registrationSuccess(user.getEmail(), user.getName().split(" ")[0]);
 		}
 
 		DBUtil.closeConnection(ps);
