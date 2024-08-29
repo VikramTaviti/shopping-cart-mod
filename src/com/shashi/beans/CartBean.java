@@ -52,7 +52,7 @@ public class CartBean implements Serializable {
 		this.userId = userId;
 		this.prodId = prodId;
 		this.quantity = quantity;
-		this.prodName = prodName;
+		this.prodName = productName;
 	}
 
 }
